@@ -61,3 +61,77 @@ def set_etabs_units(SapModel,length="mm",force="N"):
     elif(length=="m" and force=="kN"):
         SapModel.SetPresentUnits(6);
     return None;
+
+def get_all_frames(SapModel):
+    """
+    Parameters:
+    SapModel : SapModel.Pointer
+    
+    Returns:
+    A list of frame elements in current Etabs model
+    
+    frames : list
+    """
+    frame_objs=SapModel.FrameObj.GetAllFrames();
+    #Initiate the frames list
+    frames=[];
+    #Populate the frames list with data from frame_objs
+    for i in range(frame_objs[0]):
+        frameNm=frame_objs[1][i];
+        prop=frame_objs[2][i];
+        story=frame_objs[3][i];
+        pt1=frame_objs[4][i];
+        pt2=frame_objs[5][i];
+        x1=frame_objs[6][i];
+        y1=frame_objs[7][i];
+        z1=frame_objs[8][i];
+        x2=frame_objs[9][i];
+        y2=frame_objs[10][i];
+        z2=frame_objs[11][i];
+        rot=frame_objs[12][i];
+        offX1=frame_objs[13][i];
+        offY1=frame_objs[14][i];
+        offZ1=frame_objs[15][i];
+        offX2=frame_objs[16][i];
+        offY2=frame_objs[17][i];
+        offZ2=frame_objs[18][i];
+        cardPt=frame_objs[19][i];
+        allFrames+=[[frameNm,prop,story,
+                     pt1,pt2,
+                     x1,y1,z1,
+                     x2,y2,z2,
+                     rot,
+                     offX1,offY1,offZ1,
+                     offX2,offY2,offZ2,
+                     cardPt]];
+    return frames;
+
+def get_all_points(SapModel,inc_restraint=True):
+    """
+    This will return all the points of the model.
+    
+    Parameters:
+    SapModel : SapModel.Pointer
+    inc_restraint : boolean (set True for restraints to be included
+                             to points list)
+    units : str. Default to 'mm'
+    
+    Returns:
+    points : list (Points in current Etabs model)
+    """
+    [numberPts,ptNames,ptX,ptY,ptZ,ptCsys]=SapModel.PointObj.GetAllPoints();
+    #initiate a temporary list to contain the restrained points data
+    ptsRestraint=[];
+    if(inc_restraint==True):
+        for i in range(numberPts):
+            ptRestraintSA=SapModel.PointObj.GetRestraint(ptNames[i])
+            ptRestraint=ptRestraintSA[0][0]
+            ptsRestraint.append(ptRestraint)
+    #Initiate the points list
+    points=[]
+    for i in range(numberPts):
+        if(incRestraint==True):
+            points.append([ptNames[i],ptX[i],ptY[i],ptZ[i],ptsRestraint[i]]);
+        else:
+            points.append([ptNames[i],ptX[i],ptY[i],ptZ[i]]);
+    return points;
