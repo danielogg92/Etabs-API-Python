@@ -1,4 +1,6 @@
-import comtypes.client
+import comtypes.client;
+import os;
+import sys;
 
 def connect_to_etabs():
     """
