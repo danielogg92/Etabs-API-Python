@@ -23,19 +23,21 @@ def connect_to_etabs():
 def get_story_data(SapModel):
     """
     returns:
-    storyData (list)
+    story_data (list). The is a nested list with each element consists of
+    [story_nm,story_ele,story_hgt,is_master_story,similar_to,splice_above,
+     splice_height]
     """
     #Get the data using API
     story_in=SapModel.Story.GetStories()
     #Separate the data to lists
-    nos_stories=story[0];
-    story_nms=story[1];
-    story_eles=story[2];
-    story_hgts=story[3];
-    is_master_story=story[4];
-    similar_to_story=story[5];
-    splice_above=story[6];
-    splice_height=story[7];
+    nos_stories=story_in[0];
+    story_nms=story_in[1];
+    story_eles=story_in[2];
+    story_hgts=story_in[3];
+    is_master_story=story_in[4];
+    similar_to_story=story_in[5];
+    splice_above=story_in[6];
+    splice_height=story_in[7];
     #Combine data into one list called story_data
     story_data=[];
     for i in range(len(story_nms)):
@@ -43,7 +45,7 @@ def get_story_data(SapModel):
         story_data.append([story_nms[j],
                            round(story_hgts[j],3),
                            round(story_eles[j],3),
-                           is_master_story[j][3],
+                           is_master_story[j],
                            similar_to_story[j],
                            splice_above[j],
                            splice_height[j]]);
@@ -98,14 +100,14 @@ def get_all_frames(SapModel):
         offY2=frame_objs[17][i];
         offZ2=frame_objs[18][i];
         cardPt=frame_objs[19][i];
-        allFrames+=[[frameNm,prop,story,
-                     pt1,pt2,
-                     x1,y1,z1,
-                     x2,y2,z2,
-                     rot,
-                     offX1,offY1,offZ1,
-                     offX2,offY2,offZ2,
-                     cardPt]];
+        frames+=[[frameNm,prop,story,
+                  pt1,pt2,
+                  x1,y1,z1,
+                  x2,y2,z2,
+                  rot,
+                  offX1,offY1,offZ1,
+                  offX2,offY2,offZ2,
+                  cardPt]];
     return frames;
 
 def get_all_points(SapModel,inc_restraint=True):
@@ -119,20 +121,22 @@ def get_all_points(SapModel,inc_restraint=True):
     units : str. Default to 'mm'
     
     Returns:
-    points : list (Points in current Etabs model)
+    points : list (Points in current Etabs model). Elements in the points
+    list if inc_restraint==False [pt_nm,x,y,z]. If inc_restraint==True the
+    point element = [pt_nm,x,y,z,(FUx,FUy,FUz,FRx,FRy,FRz)]
     """
     [numberPts,ptNames,ptX,ptY,ptZ,ptCsys]=SapModel.PointObj.GetAllPoints();
     #initiate a temporary list to contain the restrained points data
     ptsRestraint=[];
     if(inc_restraint==True):
         for i in range(numberPts):
-            ptRestraintSA=SapModel.PointObj.GetRestraint(ptNames[i])
-            ptRestraint=ptRestraintSA[0][0]
-            ptsRestraint.append(ptRestraint)
+            ptRestraintSA=SapModel.PointObj.GetRestraint(ptNames[i]);
+            ptRestraint=ptRestraintSA[0];
+            ptsRestraint.append(ptRestraint);
     #Initiate the points list
     points=[]
     for i in range(numberPts):
-        if(incRestraint==True):
+        if(inc_restraint==True):
             points.append([ptNames[i],ptX[i],ptY[i],ptZ[i],ptsRestraint[i]]);
         else:
             points.append([ptNames[i],ptX[i],ptY[i],ptZ[i]]);
