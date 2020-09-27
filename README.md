@@ -3,13 +3,22 @@ Easy to use functions written in Python for the CSI Etabs API
 
 ## Objective
 
-To develop functions to increase the user ability of CSI Etabs and provide
+To develop functions to increase the usability of CSI Etabs and provide
 some custom functions for data extraction and Structural Design using
 Australian Standards.
 
+This project is intended to help those who are looking to develop there own programs to
+supplement their design workflows. People are encouraged to help contribute with their own
+functions or send suggestions for tools that Engineers may find useful. 
+
 ## Current Capabilities
 
-## Project Objectives
+- Connect to the Etabs API using python
+
+## Examples and Tutorials
+For examples and tutorials using this script. Refer to the wiki page
+
+[Etabs-API-Python Wiki](https://github.com/danielogg92/Etabs-API-Python/wiki)
 
 ## Dependencies
 
