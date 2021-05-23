@@ -20,6 +20,28 @@ def connect_to_etabs():
     #setEtabsUnits()
     return SapModel,EtabsObject;
 
+def connect_to_etabs_2019():
+    """
+    Return Values:
+    SapModel (type cOAPI pointer)
+    myETABSObject (type cOAPI pointer)
+    helper (type cOAPI pointer)
+    """
+    #create API helper object
+    helper = comtypes.client.CreateObject('ETABSv1.Helper');
+    helper = helper.QueryInterface(comtypes.gen.ETABSv1.cHelper);
+    
+    #attach to a running instance of ETABS
+    try:
+        #get the active ETABS object
+        myETABSObject = helper.GetObject("CSI.ETABS.API.ETABSObject");
+    except (OSError, comtypes.COMError):
+        print("No running instance of the program found or failed to attach.");
+        sys.exit(-1);
+    #create SapModel object
+    SapModel = myETABSObject.SapModel;
+    return SapModel,myETABSObject,helper;
+
 def get_story_data(SapModel):
     """
     returns:
